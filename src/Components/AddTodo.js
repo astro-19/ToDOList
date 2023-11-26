@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import {useParams} from "react-router-dom"
 const AddTodo = (props) => {
-  console.log(props)
   const {action} = useParams();
 
   const Message = (type, message) => {
@@ -110,7 +109,7 @@ useEffect(()=>{
             className="btn btn-primary"
             onClick={handleSubmit}
           >
-            Submit
+            {action === "edit" ? "Update" : "Add"}
           </button>
         </form>
       </div>
