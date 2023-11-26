@@ -1,13 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
-import {useParams, useLocation} from "react-router-dom"
-const AddTodo = () => {
-  const location = useLocation()
-  let data = location?.state?.data;
-  let localTasks = JSON.parse(localStorage.getItem("task"));
-  const [task, setTask] = React.useState("");
-  const [duedate, setDuedate] = React.useState("");
-  const [taskValues, setTaskValues] = React.useState([]);
+import {useParams} from "react-router-dom"
+const AddTodo = (props) => {
+  console.log(props)
   const {action} = useParams();
 
   const Message = (type, message) => {
@@ -39,22 +34,43 @@ const AddTodo = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (action === "edit") {
-      if(localTasks?.length > 0){
-        for (let i in localTasks) {
-          console.log(i);
+      if(props.initialTask.length > 0) {
+        for (let i in props.initialTask) {
+          if(props.initialTask[i].id === props.taskValues[i].id){
+            props.taskValues[i].task = props.task;
+            props.taskValues[i].duedate = props.duedate;
+            Message("success", "Updated successfully");
+            // setTaskValues(() => [
+            //   ...taskValues,
+            //   {id: initialTask[i].id, task: task, duedate: duedate, status: false }
+            // ]);
+          }
         }
+        // Message("success", "Updated successfully");
       }
-    } else if (task !== "" && duedate !== "" && action !== "edit") {
-      setTaskValues(() => [
-        ...taskValues,
-        { task: task, duedate: duedate, status: false }
+    } else if (props.task !== "" && props.duedate !== "" && action !== "edit") {
+      console.log("hello")
+      let id;
+      if(props.taskValues.length === 0){
+        id=0
+      }else {
+        id = props.taskValues[props.taskValues.length-1].id+ 1
+      }
+      props.setTaskValues(() => [
+        ...props.taskValues,
+        {id: id, task: props.task, duedate: props.duedate, status: false }
       ]);
-      localStorage.setItem("task", JSON.stringify(taskValues));
+      props.setTask("");
+      props.setDuedate("");
       Message("success", "Added successfully");
     } else {
       Message("error", "Required fields");
     }
   };
+
+useEffect(()=>{
+  localStorage.setItem("task", JSON.stringify(props.taskValues));
+}, [props.taskValues])
 
   return (
     <div className="container">
@@ -69,25 +85,23 @@ const AddTodo = () => {
               className="form-control"
               id="exampleInputEmail1"
               name="task"
-              defaultValue={action === "edit" ? data.task : ""}
-              aria-describedby="emailHelp"
+              defaultValue={props.task}            
               onChange={(e) => {
-                setTask(e.target.value);
+                props.setTask(e.target.value);
               }}
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="htmlForm-label">
+            <label className="htmlForm-label">
               Due Date
             </label>
             <input
               type="date"
               name="due_date"
               className="form-control"
-              defaultValue={action === "edit" ? data.duedate : ""}
-              id="exampleInputPassword1"
+              defaultValue={props.duedate}
               onChange={(e) => {
-                setDuedate(e.target.value);
+                props.setDuedate(e.target.value);
               }}
             />
           </div>

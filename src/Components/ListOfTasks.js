@@ -1,9 +1,18 @@
-import React from "react";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons"
 import {Link} from "react-router-dom"
-const ListOfTasks = () => {
+const ListOfTasks = (props) => {
   let localTasks = JSON?.parse(localStorage.getItem("task"));
+  const deleteTask = (e, task) => {
+    e.preventDefault();
+    props.setTaskValues(props.taskValues.filter((todo) => {
+      return task !== todo
+    }))
+    localStorage.setItem("task", JSON.stringify(props.taskValues))
+  }
+
   return (
     <div className="container">
       <div className="row">
@@ -43,7 +52,7 @@ const ListOfTasks = () => {
                     </Link>
                   </td>
                   <td>
-                    <a>
+                    <a onClick={(e) => {deleteTask(e, localTasks[task])}}>
                       <FontAwesomeIcon icon={faTrash} />
                     </a>
                   </td>

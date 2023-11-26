@@ -2,10 +2,21 @@ import AddTodo from "./Components/AddTodo";
 import ListOfTasks from "./Components/ListOfTasks";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import React from "react";
 
-function App() {
+function App() {  const location = useLocation()
+  let data = location?.state?.data;
   
+  let initialTask;
+  if(localStorage.getItem("task") === null){
+    initialTask = []
+  } else {
+    initialTask = JSON.parse(localStorage.getItem("task"));
+  }
+  const [task, setTask] = React.useState(data?.task);
+  const [duedate, setDuedate] = React.useState(data?.duedate);
+  const [taskValues, setTaskValues] = React.useState(initialTask);
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary mb-4">
@@ -45,11 +56,11 @@ function App() {
         </div>
       </nav>
       <Routes>
-        <Route path="/" element={<AddTodo />}>
+        <Route path="/" element={<AddTodo initialTask={initialTask} task={task} setTask={setTask} duedate={duedate} setDuedate={setDuedate} taskValues={taskValues} setTaskValues={setTaskValues}/>}>
         </Route>
-        <Route path="/list-of-tasks" element={<ListOfTasks />}>
+        <Route path="/list-of-tasks" element={<ListOfTasks taskValues={taskValues} setTaskValues={setTaskValues}/>}>
         </Route>
-        <Route path="/edit-tasks/:action" element={<AddTodo />}>
+        <Route path="/edit-tasks/:action" element={<AddTodo initialTask={initialTask} task={task} setTask={setTask} duedate={duedate} setDuedate={setDuedate} taskValues={taskValues} setTaskValues={setTaskValues}/>}>
         </Route>
       </Routes>
       <ToastContainer />
