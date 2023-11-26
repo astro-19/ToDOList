@@ -2,18 +2,10 @@ import AddTodo from "./Components/AddTodo";
 import ListOfTasks from "./Components/ListOfTasks";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
-  const showListOfTasks = () => {
-    if (window.location.pathname === "/list-of-tasks") {
-      return <ListOfTasks />;
-    }
-  };
-  const AddTodoPath = () => {
-    if (window.location.pathname === "/") {
-      return <AddTodo />;
-    }
-  };
+  
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary mb-4">
@@ -52,9 +44,14 @@ function App() {
           </div>
         </div>
       </nav>
-      {/* <AddTodo /> */}
-      {AddTodoPath()}
-      {showListOfTasks()}
+      <Routes>
+        <Route path="/" element={<AddTodo />}>
+        </Route>
+        <Route path="/list-of-tasks" element={<ListOfTasks />}>
+        </Route>
+        <Route path="/edit-tasks/:action" element={<AddTodo />}>
+        </Route>
+      </Routes>
       <ToastContainer />
     </div>
   );

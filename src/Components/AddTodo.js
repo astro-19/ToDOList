@@ -1,11 +1,14 @@
 import React from "react";
 import { toast } from "react-toastify";
+import {useParams, useLocation} from "react-router-dom"
 const AddTodo = () => {
+  const location = useLocation()
+  let data = location?.state?.data;
   let localTasks = JSON.parse(localStorage.getItem("task"));
-  console.log(localTasks.length);
   const [task, setTask] = React.useState("");
   const [duedate, setDuedate] = React.useState("");
   const [taskValues, setTaskValues] = React.useState([]);
+  const {action} = useParams();
 
   const Message = (type, message) => {
     if (type === "success") {
@@ -35,14 +38,16 @@ const AddTodo = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (localTasks.length > 0) {
-      for (let i in localTasks) {
-        console.log(i);
+    if (action === "edit") {
+      if(localTasks?.length > 0){
+        for (let i in localTasks) {
+          console.log(i);
+        }
       }
-    } else if (task !== "" && duedate !== "") {
-      setTaskValues([
+    } else if (task !== "" && duedate !== "" && action !== "edit") {
+      setTaskValues(() => [
         ...taskValues,
-        { task: task, duedate: duedate, status: false },
+        { task: task, duedate: duedate, status: false }
       ]);
       localStorage.setItem("task", JSON.stringify(taskValues));
       Message("success", "Added successfully");
@@ -64,11 +69,11 @@ const AddTodo = () => {
               className="form-control"
               id="exampleInputEmail1"
               name="task"
+              defaultValue={action === "edit" ? data.task : ""}
               aria-describedby="emailHelp"
               onChange={(e) => {
                 setTask(e.target.value);
               }}
-              required
             />
           </div>
           <div className="mb-3">
@@ -79,11 +84,11 @@ const AddTodo = () => {
               type="date"
               name="due_date"
               className="form-control"
+              defaultValue={action === "edit" ? data.duedate : ""}
               id="exampleInputPassword1"
               onChange={(e) => {
                 setDuedate(e.target.value);
               }}
-              required
             />
           </div>
           <button
