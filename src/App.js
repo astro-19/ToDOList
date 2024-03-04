@@ -111,14 +111,15 @@ function App() {
 
   return (
     <div className="container p-4">
-      <h2>Todo List</h2>
+      <h2>Add Todo</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <input type="text" className="form-control" onChange={(e) => setTodo(e.target.value)} value={todo} />
         </div>
-        <button type="submit" className="btn btn-primary">Add</button>
+        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
       <div className="mt-4">
+        <h2>Todo List</h2>
         <table className="table">
           <thead>
             <tr>
@@ -135,7 +136,6 @@ function App() {
                 <td className="col-2"><input type="checkbox" className="form-check-input" onChange={() => todoComplete(todo.id)} checked={todo.complete} disabled={todoEditing === todo.id} /></td>
                 <td className="col-5">{todoEditing === todo.id ? (<input type="text" className="form-control" onChange={(e) => setEditingText(e.target.value)} value={editingText} />) : (todo.task)} </td>
                 <td className="col-3">{todoEditing === todo.id ? <button className="btn btn-primary btn-sm" onClick={() => editTodo(todo.id)}>Submit</button> : <button className="btn btn-primary btn-sm" onClick={() => setTodoEditing(todo.id)}>Edit</button>} <button className="btn btn-danger btn-sm" onClick={() => deleteTodo(todo.id)}>Delete</button></td>
-                {/* <td className="col-2"><button className="btn btn-danger btn-sm" onClick={() => deleteTodo(todo.id)}>Delete</button></td> */}
               </tr>
             })}
           </tbody>
