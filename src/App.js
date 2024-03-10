@@ -9,6 +9,7 @@ function App() {
   const [todo, setTodo] = React.useState("")
   const [todoEditing, setTodoEditing] = React.useState(null)
   const [editingText, setEditingText] = React.useState("")
+  const [completedTodosCount, setCompletedTodosCount] = React.useState(0)
 
   React.useEffect(() => {
     const retrieveTodo = localStorage.getItem("todos");
@@ -21,6 +22,15 @@ function App() {
   React.useEffect(() => {
     const saveTodo = JSON.stringify(todos);
     localStorage.setItem('todos', saveTodo)
+
+    const completeTodo = [...todos].filter((todo) => {
+      if (todo.complete === true) {
+        document.getElementById(todo.id).style.textDecoration = "line-through";
+      }
+      return todo.complete === true;
+    })
+
+    setCompletedTodosCount(completeTodo?.length)
   }, [todos])
 
   const toastifyMessage = (type, message) => {
@@ -88,13 +98,13 @@ function App() {
       const updatedTodo = [...todos].map((todo) => {
         if (todo.id === id) {
           todo.task = editingText
-          toastifyMessage("success", `Todo edited successfully.`)
         }
         return todo;
       })
       setTodos(updatedTodo);
       setEditingText("")
       setTodoEditing(null)
+      toastifyMessage("success", `Todo edited successfully.`)
     }
   }
 
@@ -120,6 +130,9 @@ function App() {
       </form>
       <div className="mt-4">
         <h2>Todo List</h2>
+        <div className="d-flex mt-2 mb-2">
+          <h6>Task Completed: {completedTodosCount}</h6>
+        </div>
         <table className="table">
           <thead>
             <tr>
@@ -133,9 +146,9 @@ function App() {
             {todos.map((todo) => {
               return <tr key={todo.id}>
                 <td className="col-2" >{todo.complete ? "Completed" : "Incomplete"}</td>
-                <td className="col-2"><input type="checkbox" className="form-check-input" onChange={() => todoComplete(todo.id)} checked={todo.complete} disabled={todoEditing === todo.id} /></td>
-                <td className="col-5">{todoEditing === todo.id ? (<input type="text" className="form-control" onChange={(e) => setEditingText(e.target.value)} value={editingText} />) : (todo.task)} </td>
-                <td className="col-3">{todoEditing === todo.id ? <button className="btn btn-primary btn-sm" onClick={() => editTodo(todo.id)}>Submit</button> : <button className="btn btn-primary btn-sm" onClick={() => setTodoEditing(todo.id)}>Edit</button>} <button className="btn btn-danger btn-sm" onClick={() => deleteTodo(todo.id)}>Delete</button></td>
+                <td className="col-2"><input type="checkbox" className="form-check-input" onChange={() => todoComplete(todo.id)} checked={todo.complete} disabled={todoEditing === todo.id || todo.complete} /></td>
+                <td className="col-5" id={todo.id}>{todoEditing === todo.id ? (<input type="text" className="form-control" onChange={(e) => setEditingText(e.target.value)} value={editingText} />) : (todo.task)} </td>
+                <td className="col-3">{todo.complete ? "" : (todoEditing === todo.id ? <button className="btn btn-primary btn-sm" onClick={() => editTodo(todo.id)}>Submit</button> : <button className="btn btn-primary btn-sm" onClick={() => setTodoEditing(todo.id)}>Edit</button>)} <button className="btn btn-danger btn-sm" onClick={() => deleteTodo(todo.id)}>Delete</button></td>
               </tr>
             })}
           </tbody>
