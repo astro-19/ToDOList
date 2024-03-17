@@ -70,7 +70,7 @@ function App() {
     }
     else {
       const newTodo = {
-        id: new Date().getTime(),
+        id: todos?.length + 1, //new Date().getTime(),
         task: todo,
         complete: false
       }
